@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '/models/filter_options.dart';
 import '/providers/cart_provider.dart';
+import '/views/screens/card_page.dart';
 import '/views/widgets/badge.dart';
 import '/views/widgets/products_grid.dart';
 
@@ -54,7 +55,8 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
               value: chartProvider.itemCount.toString(),
             ),
             child: IconButton(
-              onPressed: () {},
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(CartPage.routeName),
               icon: const Icon(
                 Icons.shopping_cart,
               ),
