@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/providers/cart_provider.dart';
+import '/providers/order_provider.dart';
+import '/views/screens/order_page.dart';
 import '/views/widgets/cart_item.dart';
 
 class CartPage extends StatelessWidget {
   static const String routeName = "/cart";
-  const CartPage({Key? key}) : super(key: key);
+  CartPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class CartPage extends StatelessWidget {
                 Spacer(),
                 Chip(
                   label: Text(
-                    '${cartProvider.totalAmount}\$',
+                    '${cartProvider.totalAmount.toStringAsFixed(2)}\$',
                     style: TextStyle(
                         color: Theme.of(context)
                                 .primaryTextTheme
@@ -42,7 +44,14 @@ class CartPage extends StatelessWidget {
                   backgroundColor: Theme.of(context).primaryColor,
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Provider.of<OrderProvider>(context, listen: false).addOrder(
+                      cartProvider.items.values.toList(),
+                      cartProvider.totalAmount,
+                    );
+                    cartProvider.clear();
+                    Navigator.of(context).pushNamed(OrderPage.routeName);
+                  },
                   child: Text(
                     'Order Now',
                     style: TextStyle(

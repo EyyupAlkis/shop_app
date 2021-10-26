@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/views/widgets/app_drawer.dart';
 
 import '/models/filter_options.dart';
 import '/providers/cart_provider.dart';
-import '/views/screens/card_page.dart';
+import 'cart_page.dart';
 import '/views/widgets/badge.dart';
 import '/views/widgets/products_grid.dart';
 
@@ -64,6 +65,7 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
           )
         ],
       ),
+      drawer: AppDrawer(),
       body: SafeArea(
         child: ProductsGrid(showOnlyFavorites: _showOnlyFavorites),
       ),
