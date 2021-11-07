@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/providers/products_provider.dart';
+import '/views/screens/edit_product_page.dart';
 import '/views/widgets/app_drawer.dart';
 import '/views/widgets/user_product_item.dart';
 
@@ -15,29 +16,33 @@ class UserProductPage extends StatelessWidget {
     return Scaffold(
       drawer: const AppDrawer(),
       appBar: AppBar(
-        title: Text('Your Products'),
+        title: const Text('Your Products'),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pushNamed(EditProductPage.routeName);
+            },
             icon: Icon(Icons.add),
           )
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: ListView.builder(
-            itemCount: productProvider.items.length,
-            itemBuilder: (builderContex, index) {
-              return Column(
-                children: [
-                  UserProductItem(
-                    title: productProvider.items[index].title,
-                    imageUrl: productProvider.items[index].imageUrl,
-                  ),
-                  const Divider()
-                ],
-              );
-            }),
+          itemCount: productProvider.items.length,
+          itemBuilder: (builderContex, index) {
+            return Column(
+              children: [
+                UserProductItem(
+                  id: productProvider.items[index].id,
+                  title: productProvider.items[index].title,
+                  imageUrl: productProvider.items[index].imageUrl,
+                ),
+                const Divider()
+              ],
+            );
+          },
+        ),
       ),
     );
   }

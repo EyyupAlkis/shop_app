@@ -72,8 +72,28 @@ class ProductsProvider with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  void addProduct() {
-    //_items.add(value);
+  void addProduct(Product product) {
+    if (_items.any((element) => element.id == product.id)) {
+      Product willUpdateProduct = findById(product.id);
+      willUpdateProduct.description = product.description;
+      willUpdateProduct.title = product.title;
+      willUpdateProduct.price = product.price;
+      willUpdateProduct.imageUrl = product.imageUrl;
+    } else {
+      final finalProduct = Product(
+        id: DateTime.now().toString(),
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        imageUrl: product.imageUrl,
+      );
+      _items.add(finalProduct);
+    }
+
     notifyListeners();
+  }
+
+  void deleteProduct(String productId) {
+    _items.removeWhere((element) => element.id == productId);
   }
 }
