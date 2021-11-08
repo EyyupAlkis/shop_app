@@ -1,8 +1,12 @@
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import '/models/product.dart';
 
 class ProductsProvider with ChangeNotifier {
+  final url =
+      'https://shop-app-flutter-53b3f-default-rtdb.europe-west1.firebasedatabase.app/product.json';
   final List<Product> _items = [
     Product(
       id: 'p1',
@@ -72,28 +76,46 @@ class ProductsProvider with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  void addProduct(Product product) {
+  Future<void> addProduct(Product product) async {
     if (_items.any((element) => element.id == product.id)) {
       Product willUpdateProduct = findById(product.id);
       willUpdateProduct.description = product.description;
       willUpdateProduct.title = product.title;
       willUpdateProduct.price = product.price;
       willUpdateProduct.imageUrl = product.imageUrl;
+      notifyListeners();
+      return Future.value();
     } else {
-      final finalProduct = Product(
-        id: DateTime.now().toString(),
-        title: product.title,
-        description: product.description,
-        price: product.price,
-        imageUrl: product.imageUrl,
-      );
-      _items.add(finalProduct);
+      return http
+          .post(Uri.parse(url),
+              body: json.encode({
+                'title': product.title,
+                'price': product.price,
+                'id': product.id,
+                'description': product.description,
+                'imageUrl': product.imageUrl,
+                'isFavorite': product.isFavorite
+              }))
+          .then((response) {
+        final finalProduct = Product(
+          id: DateTime.now().toString(),
+          title: product.title,
+          description: product.description,
+          price: product.price,
+          imageUrl: product.imageUrl,
+        );
+        _items.add(finalProduct);
+        notifyListeners();
+      }).catchError((error) {
+        print(error);
+        throw error;
+      });
     }
-
-    notifyListeners();
   }
 
   void deleteProduct(String productId) {
     _items.removeWhere((element) => element.id == productId);
   }
+
+  void _uploadProduct(Product product) async {}
 }
