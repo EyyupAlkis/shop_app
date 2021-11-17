@@ -66,7 +66,7 @@ class _EditProductPageState extends State<EditProductPage> {
     }
   }
 
-  void _saveForm() {
+  void _saveForm() async {
     final isValid = _formKey.currentState?.validate();
     if (isValid == true) {
       setState(() {
@@ -77,10 +77,12 @@ class _EditProductPageState extends State<EditProductPage> {
       print(_editedProduct.description);
       print(_editedProduct.price);
       print(_editedProduct.imageUrl);
-      Provider.of<ProductsProvider>(context, listen: false)
-          .addProduct(_editedProduct)
-          .catchError((error) {
-        return showDialog(
+      try {
+        Provider.of<ProductsProvider>(context, listen: false)
+            .addProduct(_editedProduct);
+        Navigator.of(context).pop();
+      } catch (error) {
+        await showDialog(
             context: context,
             builder: (ctx) => AlertDialog(
                     title: const Text('An error occured'),
@@ -90,9 +92,12 @@ class _EditProductPageState extends State<EditProductPage> {
                           onPressed: () => Navigator.of(ctx).pop(),
                           child: const Text('OK'))
                     ]));
-      }).then((value) {
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
         Navigator.of(context).pop();
-      });
+      }
     }
   }
 

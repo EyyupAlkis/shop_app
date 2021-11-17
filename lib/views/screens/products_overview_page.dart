@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/providers/products_provider.dart';
 import 'package:shop_app/views/widgets/app_drawer.dart';
 
 import '/models/filter_options.dart';
 import '/providers/cart_provider.dart';
-import 'cart_page.dart';
 import '/views/widgets/badge.dart';
 import '/views/widgets/products_grid.dart';
+import 'cart_page.dart';
 
 class ProductsOverviewPage extends StatefulWidget {
   static const String routeName = "/product-overview";
@@ -19,6 +20,37 @@ class ProductsOverviewPage extends StatefulWidget {
 
 class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
   var _showOnlyFavorites = false;
+  var _isInit = false;
+  var _isLoading = false;
+
+  @override
+  void initState() {
+    //Provider.of<ProductsProvider>(context, listen: false).fetchAndSetProducts();
+    // Future.delayed(Duration.zero).then((_) => {
+    //       Provider.of<ProductsProvider>(context, listen: false)
+    //           .fetchAndSetProducts()
+    //     });
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (!_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<ProductsProvider>(context, listen: false)
+          .fetchAndSetProducts()
+          .then((value) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = true;
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,9 +97,13 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
           )
         ],
       ),
-      drawer: AppDrawer(),
+      drawer: const AppDrawer(),
       body: SafeArea(
-        child: ProductsGrid(showOnlyFavorites: _showOnlyFavorites),
+        child: _isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : ProductsGrid(showOnlyFavorites: _showOnlyFavorites),
       ),
     );
   }
