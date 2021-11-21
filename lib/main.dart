@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/views/screens/edit_product_page.dart';
 
+import '/providers/auth_provider.dart';
 import '/providers/cart_provider.dart';
 import '/providers/order_provider.dart';
 import '/providers/products_provider.dart';
+import '/views/screens/auth_screen.dart';
+import '/views/screens/edit_product_page.dart';
 import '/views/screens/order_page.dart';
 import '/views/screens/product_detail_page.dart';
 import '/views/screens/products_overview_page.dart';
@@ -24,7 +26,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (ctx) => ProductsProvider()),
         ChangeNotifierProvider(create: (ctx) => CartProvider()),
-        ChangeNotifierProvider(create: (ctx) => OrderProvider())
+        ChangeNotifierProvider(create: (ctx) => OrderProvider()),
+        ChangeNotifierProvider(create: (ctx) => AuthProvider()),
       ],
       child: MaterialApp(
         title: 'MyShop',
@@ -35,7 +38,7 @@ class MyApp extends StatelessWidget {
                 .colorScheme
                 .copyWith(secondary: Colors.deepOrange),
             fontFamily: 'Lato'),
-        initialRoute: ProductsOverviewPage.routeName,
+        initialRoute: AuthScreen.routeName,
         routes: {
           ProductsOverviewPage.routeName: (ctx) => ProductsOverviewPage(),
           ProductDetailPage.routeName: (ctx) => ProductDetailPage(),
@@ -43,6 +46,7 @@ class MyApp extends StatelessWidget {
           OrderPage.routeName: (ctx) => OrderPage(),
           UserProductPage.routeName: (ctx) => UserProductPage(),
           EditProductPage.routeName: (ctx) => EditProductPage(),
+          AuthScreen.routeName: (ctx) => AuthScreen(),
         },
       ),
     );
